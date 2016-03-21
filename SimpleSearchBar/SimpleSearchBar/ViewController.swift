@@ -8,18 +8,91 @@
 
 import UIKit
 
-class ViewController: UIViewController {
-
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
+    
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var tableView: UITableView!
+    
+    let citiesArray = ["Salt Lake City",
+        "Compton", "Magna", "Fillmore", "Hannah", "Scipio", "Kearns", "West Valley City", "Logan"]
+    
+    var resultsArray = [String]()
+    
+    var isSearching: Bool = false
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        self.resultsArray = self.citiesArray
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func searchBarShouldBeginEditing(searchBar: UISearchBar) -> Bool {
+        
+        return true
     }
-
-
+    
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        print("searchBar cancel")
+        self.restoreSearchBar("")
+    }
+    
+    func searchBarTextDidEndEditing(searchBar: UISearchBar) {
+        print("search bar end editing")
+        searchBar.resignFirstResponder()
+        self.resultsArray = self.citiesArray
+        self.tableView.reloadData()
+    }
+    
+    func searchBarTextDidBeginEditing(searchBar: UISearchBar) {
+        searchBar.becomeFirstResponder()
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        self.resultsArray.removeAll()
+        
+        for city in citiesArray {
+            // if the city starts with the letter "searchText" then put it in the results array
+           
+            if self.containsString(city, searchText: searchText) {
+                self.resultsArray.append(city)
+            }
+        }
+        print(self.resultsArray)
+        
+        self.tableView.reloadData()
+        self.restoreSearchBar(searchText)
+        
+    }
+    
+    func restoreSearchBar(searchText: String) {
+        if searchText == "" {
+            self.searchBar.text = ""
+            self.resultsArray = self.citiesArray
+            self.tableView.reloadData()
+            self.searchBar.resignFirstResponder()
+        }
+    }
+    
+    func containsString(str: String, searchText: String) -> Bool {
+        
+        let lowercaseString = str.lowercaseString
+        let lowercaseSearchText = searchText.lowercaseString
+        
+        return lowercaseString.hasPrefix(lowercaseSearchText)
+    }
+    
+    //MARK: Table View Delegate and Datasource Methods
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell")!
+        cell.textLabel?.text = resultsArray[indexPath.row]
+        return cell
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return resultsArray.count;
+    }
 }
 

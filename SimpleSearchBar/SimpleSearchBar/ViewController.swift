@@ -10,22 +10,23 @@ import UIKit
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
+    //MARK: - Outlets
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     
+    //MARK: - Properties
     let citiesArray = ["Salt Lake City",
         "Compton", "Magna", "Fillmore", "Hannah", "Scipio", "Kearns", "West Valley City", "Logan"]
     
     var resultsArray = [String]()
-    
-    var isSearching: Bool = false
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.resultsArray = self.citiesArray
     }
     
+    
+    //MARK: - Search Bar delegate methods
     func searchBarShouldBeginEditing(searchBar: UISearchBar) -> Bool {
         
         return true
@@ -36,6 +37,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.restoreSearchBar("")
     }
     
+    //Sets the displayed array to the cities array when text is done editing
     func searchBarTextDidEndEditing(searchBar: UISearchBar) {
         print("search bar end editing")
         searchBar.resignFirstResponder()
